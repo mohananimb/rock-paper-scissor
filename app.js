@@ -7,7 +7,6 @@ const game = () => {
     const playButton = document.querySelector(".intro button");
     const introScreen = document.querySelector(".intro");
     const match = document.querySelector(".match");
-    // console.log(compImage);
 
     playButton.addEventListener("click", () => {
       introScreen.classList.add("fadeOut");
@@ -25,6 +24,13 @@ const game = () => {
 
     const playerImage = document.querySelector(".player-hand");
     const compImage = document.querySelector(".computer-hand");
+    const hands = document.querySelectorAll(".hands img");
+
+    hands.forEach(hand => {
+      hand.addEventListener("animationend", e => {
+        e.target.style.animation = "";
+      });
+    });
 
     options.forEach(option => {
       option.addEventListener("click", e => {
@@ -32,16 +38,25 @@ const game = () => {
         audio.play();
         let compNum = Math.floor(Math.random() * 3);
         let compChoice = computerOptions[compNum];
-        compImage.setAttribute("src", `images/${compChoice}.png`);
-        playerImage.setAttribute(
-          "src",
-          `images/${e.target.classList.value}.png`
-        );
 
-        compareHands(e.target.classList.value, compChoice);
+        setTimeout(() => {
+          compareHands(e.target.classList.value, compChoice);
+          compImage.setAttribute("src", `images/${compChoice}.png`);
+          playerImage.setAttribute(
+            "src",
+            `images/${e.target.classList.value}.png`
+          );
+        }, 2000);
+
+        //Animation
+
+        playerImage.style.animation = "shakePlayer 2s ease";
+        compImage.style.animation = "shakeComputer 2s ease";
       });
     });
   };
+
+  //update sccore
 
   const updateScore = () => {
     const playerScore = document.querySelector(".player-score p");
@@ -52,6 +67,7 @@ const game = () => {
 
   const compareHands = (playerChoice, compChoice) => {
     const heading = document.querySelector(".winner");
+
     //checking draw
     if (playerChoice === compChoice) {
       heading.innerHTML = "Draw";
